@@ -13,6 +13,9 @@ de Spring Boot que vaya incluyendo.
 
 La rama llamada br_init contiene el código necesario para empezar a trabajar con una aplicación Spring Boot.
 
+### Ejemplo API REST
+ La rama br_rest_crud contiene un ejemplo CRUD de API REST con tests unitarios e integrados.
+
 ## Lenguajes
 
 El proyecto está codificado en Java.
