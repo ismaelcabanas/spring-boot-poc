@@ -97,8 +97,27 @@ public class FindAllUserControllerTest extends AbstractControllerTest {
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .accept(MediaType.APPLICATION_JSON_UTF8)
                 )
-                .andExpect(status().isOk())
+                .andExpect(status().is2xxSuccessful())
                 .andExpect(content().json("[{\"name\":\"UserName Test\"}]"))
+                .andDo(log());
+
+    }
+
+    @Test
+    public void should_return_empty_users_when_call_endpoint() throws Exception{
+
+        // given
+        Collection<User> users = new ArrayList<User>();
+        Mockito.when(userMockService.findAll()).thenReturn(users);
+
+        // when
+        mvc.perform(
+                get(ENDPOINT)
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .accept(MediaType.APPLICATION_JSON_UTF8)
+        )
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().json("[]"))
                 .andDo(log());
 
     }
