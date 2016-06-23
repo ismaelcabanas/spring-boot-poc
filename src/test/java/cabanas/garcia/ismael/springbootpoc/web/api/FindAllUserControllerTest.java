@@ -26,7 +26,7 @@ import java.util.Collection;
 
 /**
  * Unit tests for method GET of endpoint /api/user.
- * 
+ *
  * Created by ismael on 21/06/2016.
  */
 public class FindAllUserControllerTest extends AbstractControllerTest {
@@ -49,7 +49,7 @@ public class FindAllUserControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void should_call_findAll_user_service_when_endpoint_api_user() throws Exception{
+    public void should_call_findAll_user_service_when_call_endpoint() throws Exception{
 
         // given
 
@@ -68,7 +68,7 @@ public class FindAllUserControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void should_ok_response_when_endpoint_api_user() throws Exception{
+    public void should_return_200_status_code_when_call_endpoint() throws Exception{
 
         // given
 
@@ -78,14 +78,14 @@ public class FindAllUserControllerTest extends AbstractControllerTest {
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .accept(MediaType.APPLICATION_JSON_UTF8)
                 )
-                .andExpect(status().isOk())
+                .andExpect(status().is2xxSuccessful())
                 .andDo(log());
 
     }
 
 
     @Test
-    public void should_list_users_endpoint_api_user() throws Exception{
+    public void should_return_users_when_call_endpoint() throws Exception{
 
         // given
         Collection<User> users = getUsersStubData();
