@@ -43,7 +43,7 @@ public class UserController {
      */
     @RequestMapping(value = "/api/user", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<Collection<User>> findAll(){
-        LOGGER.info("user()");
+        LOGGER.debug("findAll()");
         Collection<User> users = userService.findAll();
 
         return new ResponseEntity<Collection<User>>(users, HttpStatus.OK);

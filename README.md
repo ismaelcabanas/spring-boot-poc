@@ -2,6 +2,31 @@
  
 Este proyecto servirá de aprendizaje de todas las características de Spring Boot que vaya aprendiendo.
 
+## Introducción
+
+Este una aplicación sencilla de gestión de usuarios que permitirá:
+
+*   consultar los usuarios de un repositorio de almacenamiento
+*   buscar un usuario por su nombre de un repositorio de almacenamiento
+*   añadir un usuario al repositorio de almacenamiento
+*   actualizar los datos de un usuario del repositorio de almacenamiento
+
+Un Usuario tendrá los siguientes atributos:
+
+*   id
+*   name
+
+## Diseño
+
+### API REST
+
+La aplicación es una aplicación Spring Boot que tiene un controlador Rest que
+mapea las siguiente URLs
+
+*   localhost:8080/user (GET) - recupera todos los usuarios del repositorio
+
+
+
 ## Organización del repositorio
 
 Los progresos que vaya realizando los iré clasificando en ramas. Cada rama se corresponderá con cada característica
@@ -13,8 +38,11 @@ de Spring Boot que vaya incluyendo.
 
 La rama llamada br_init contiene el código necesario para empezar a trabajar con una aplicación Spring Boot.
 
-### Ejemplo API REST
+#### Ejemplo API REST
  La rama br_rest_crud contiene un ejemplo CRUD de API REST con tests unitarios e integrados.
+
+ De los tests unitarios, voy a comenzar haciendo dos versiones, una con JUnit y otra con Spock y
+ ya veré con cual me quedo...
 
 ## Lenguajes
 
