@@ -5,7 +5,9 @@ import cabanas.garcia.ismael.springbootpoc.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,10 +36,21 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    /**
+     * Find all users.
+     *
+     * @return A users's collection with 200 status code.
+     */
     @RequestMapping(value = "/api/user", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public Collection<User> users(){
+    public ResponseEntity<Collection<User>> findAll(){
         LOGGER.info("user()");
         Collection<User> users = userService.findAll();
-        return users;
+
+        return new ResponseEntity<Collection<User>>(users, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/api/user/{name}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public User findBy(){
+        return null;
     }
 }
