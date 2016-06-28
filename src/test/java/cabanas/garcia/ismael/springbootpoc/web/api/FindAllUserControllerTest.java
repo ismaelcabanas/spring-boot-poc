@@ -1,5 +1,6 @@
 package cabanas.garcia.ismael.springbootpoc.web.api;
 
+import cabanas.garcia.ismael.springbootpoc.helpers.UserHelper;
 import cabanas.garcia.ismael.springbootpoc.model.User;
 import cabanas.garcia.ismael.springbootpoc.service.UserService;
 import org.junit.Before;
@@ -25,8 +26,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Created by ismael on 21/06/2016.
  */
 public class FindAllUserControllerTest extends AbstractControllerTest {
-
-    private static final String USER_NAME = "UserName Test";
 
     private static final String ENDPOINT = "/api/user";
 
@@ -83,7 +82,7 @@ public class FindAllUserControllerTest extends AbstractControllerTest {
     public void should_return_users_when_call_endpoint() throws Exception{
 
         // given
-        Collection<User> users = getUsersStubData();
+        Collection<User> users = UserHelper.getUsersStubData();
         Mockito.when(userMockService.findAll()).thenReturn(users);
 
         // when
@@ -115,19 +114,6 @@ public class FindAllUserControllerTest extends AbstractControllerTest {
                 .andExpect(content().json("[]"))
                 .andDo(log());
 
-    }
-
-    private Collection<User> getUsersStubData() {
-        Collection<User> list = new ArrayList<User>();
-        list.add(getUserStubData());
-        return list;
-    }
-
-    private User getUserStubData() {
-        User user = new User.UserBuilder()
-                .name(USER_NAME)
-                .build();
-        return user;
     }
 
 }
