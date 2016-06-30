@@ -5,6 +5,8 @@ import cabanas.garcia.ismael.springbootpoc.model.User
 import cabanas.garcia.ismael.springbootpoc.service.UserService
 import cabanas.garcia.ismael.springbootpoc.web.api.UserController
 import groovy.json.JsonSlurper
+import org.hamcrest.Matchers
+import org.hamcrest.core.Is
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
@@ -18,6 +20,13 @@ import spock.lang.Specification
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 /**
  * Created by ismael on 24/06/2016.
@@ -78,47 +87,75 @@ class FindAllUserControllerTest extends Specification {
 
     def "should return users"(){
         given: "user service return users's list"
-            userMockService.findAll() >> UserHelper.getUsersStubData()
+        userMockService.findAll() >> UserHelper.getUsersStubData()
         when: "call endpoint"
-            def response = mvc.perform(
-                    get(ENDPOINT)
-                            .contentType(MediaType.APPLICATION_JSON_UTF8)
-                            .accept(MediaType.APPLICATION_JSON_UTF8)
-            )
-                .andDo(log()).andReturn().response
-            def content = response.contentAsString
+        def response = mvc.perform(
+                get(ENDPOINT)
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .accept(MediaType.APPLICATION_JSON_UTF8)
+        )
+            .andDo(log())
         then: "return a list of users"
-            content == "[{\"name\":\"UserName Test\"}]"
+        response
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(jsonPath('$[0].name', Is.is("UserName Test")))
     }
 
     def "should return empty users's list"(){
         given: "user service return a empty users's list"
-            userMockService.findAll() >> new ArrayList<User>()
+        userMockService.findAll() >> new ArrayList<User>()
+
         when: "call endpoint"
-            def response = mvc.perform(
+        def response = mvc.perform(
                     get(ENDPOINT)
                             .contentType(MediaType.APPLICATION_JSON_UTF8)
                             .accept(MediaType.APPLICATION_JSON_UTF8)
-            )
-                .andDo(log()).andReturn().response
-            def content = response.contentAsString
-        then: "return a list of users"
-            content == "[]"
+        )
+                .andDo(log())
+
+        then: "return a empty list of users"
+        response
+                .andExpect(jsonPath('$', Matchers.hasSize(0)))
     }
 
     def "should return 500 status code when happens an unknown error in user service"(){
         given: "user service throw an exception"
-            userMockService.findAll() >> {throw new Exception()}
+        userMockService.findAll() >> {throw new Exception()}
+
         when: "call endpoint"
-            def response = mvc.perform(
+        def response = mvc.perform(
+            get(ENDPOINT)
+                    .contentType(MediaType.APPLICATION_JSON_UTF8)
+                    .accept(MediaType.APPLICATION_JSON_UTF8)
+        )
+            .andDo(log())
+
+        then: "the response status is 500"
+        response
+            .andExpect(status().is5xxServerError())
+    }
+
+    def "should return a friendly error message when an error is raised in controller"(){
+        given: "user service throw an runtime exception"
+        def exceptionMessage = "User Service Exception"
+        userMockService.findAll() >> {throw new RuntimeException(exceptionMessage)}
+
+        when: "call endpoint"
+        def response = mvc.perform(
                 get(ENDPOINT)
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .accept(MediaType.APPLICATION_JSON_UTF8)
-            )
-                .andDo(log()).andReturn().response
-            def status = response.status
-        then: "return a list of users"
-            status == HttpStatus.INTERNAL_SERVER_ERROR.value()
-    }
+        )
+                .andDo(log())
 
+        then: "response contains a friendly error detail"
+        response
+                .andExpect(status().is5xxServerError())
+                .andExpect(jsonPath('$.error', Is.is(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())))
+                .andExpect(jsonPath('$.status', Is.is(HttpStatus.INTERNAL_SERVER_ERROR.value())))
+                .andExpect(jsonPath('$.exception', Is.is(RuntimeException.class.getName())))
+                .andExpect(jsonPath('$.timestamp', Matchers.notNullValue()))
+                .andExpect(jsonPath('$.path', Matchers.notNullValue()))
+                .andExpect(jsonPath('$.message', Is.is(exceptionMessage)))
+    }
 }
