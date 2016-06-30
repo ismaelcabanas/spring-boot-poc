@@ -93,7 +93,7 @@ class FindAllUserControllerTest extends Specification {
 
     def "should return empty users's list"(){
         given: "user service return a empty users's list"
-        userMockService.findAll() >> new ArrayList<User>()
+            userMockService.findAll() >> new ArrayList<User>()
         when: "call endpoint"
             def response = mvc.perform(
                     get(ENDPOINT)
@@ -104,6 +104,21 @@ class FindAllUserControllerTest extends Specification {
             def content = response.contentAsString
         then: "return a list of users"
             content == "[]"
+    }
+
+    def "should return 500 status code when happens an unknown error in user service"(){
+        given: "user service throw an exception"
+            userMockService.findAll() >> {throw new Exception()}
+        when: "call endpoint"
+            def response = mvc.perform(
+                get(ENDPOINT)
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .accept(MediaType.APPLICATION_JSON_UTF8)
+            )
+                .andDo(log()).andReturn().response
+            def status = response.status
+        then: "return a list of users"
+            status == HttpStatus.INTERNAL_SERVER_ERROR.value()
     }
 
 }
